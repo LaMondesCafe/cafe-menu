@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>La'mondes — Supabase Bağlantı Testi</title>
+  <style>
+    body{margin:0;background:#f7f7f4;color:#143f31;font:16px system-ui,Arial,sans-serif}
+    main{max-width:650px;padding:30px 20px;margin:35px auto;background:#fff;border-radius:14px;box-shadow:0 6px 26px #0000000e}
+    h1{margin-top:0} .status{padding:14px;border-radius:8px;background:#f0f5ed}
+    .good{color:#18633e}.bad{color:#9a2626} code{font-size:12px;overflow-wrap:anywhere}
+    #photo{max-width:210px;max-height:200px;border-radius:8px;display:none}
+    .minor{font-size:14px;color:#566961}
+  </style>
+</head>
+<body>
+<main>
+  <h1>La'mondes — Bağlantı Testi</h1>
+  <p>Bu sayfa yalnızca yeni Supabase veritabanını kontrol eder. Mevcut menüye müdahale etmez.</p>
+  <p id="status" class="status">Veritabanına bağlanılıyor...</p>
+  <p id="counts"></p>
+  <div id="examples"></div>
+  <img id="photo" alt="Örnek ürün fotoğrafı">
+  <p class="minor" id="photostatus"></p>
+  <p class="minor">Beklenen sonuç: <b>6 kategori</b>, <b>44 ürün</b>. Fotoğraf yüklenmesi ayrıca kontrol edilir.</p>
+</main>
+<script>
+(function(){
+  'use strict';
+  const root='https://nqrgoaytepocyvnquyww.supabase.co';
+  const key='sb_publishable_ZF5i89dq8W0fZjHxrs6Hgg_19zrNzFp';
+  const byId=id=>document.getElementById(id);
+  async function get(path){
+    const response=await fetch(root+'/rest/v1/'+path, {headers:{apikey:key}});
+    const body=await response.json();
+    if(!response.ok)throw new Error((body&&body.message)||('HTTP '+response.status));
+    if(!Array.isArray(body))throw new Error('Beklenmeyen sunucu yanıtı');
+    return body;
+  }
+  Promise.all([
+    get('lm_kategoriler?select=id,ad,sira&order=sira.asc'),
+    get('lm_urunler?select=ad,fiyat,gorsel_url,aktif&order=sira.asc')
+  ]).then(([k,u])=>{
+    const complete=k.length===6 && u.length===44;
+    byId('status').className='status '+(complete?'good':'bad');
+    byId('status').textContent=complete?'Başarılı: Yeni Supabase verileri okunabiliyor.':'Bağlantı başarılı, ancak kategori/ürün sayısı beklenenden farklı.';
+    byId('counts').textContent=k.length+' kategori, '+u.length+' ürün bulundu.';
+    byId('examples').textContent=u.length?'Örnek ürün: '+u.slice(0,3).map(item=>item.ad+' — '+Number(item.fiyat).toLocaleString('tr-TR')+' ₺').join(' | '):'Ürün kaydı bulunamadı.';
+    const first=u.find(x=>x.gorsel_url);
+    if(first){
+      const img=byId('photo');
+      img.onload=()=>{img.style.display='block';byId('photostatus').textContent='Örnek fotoğraf yüklendi.'};
+      img.onerror=()=>{byId('photostatus').textContent='Ürünler okunuyor ama örnek fotoğraf yüklenemedi; görsel yolunu ayrıca kontrol edeceğiz.'};
+      img.src=first.gorsel_url;
+    }
+  }).catch(error=>{
+    byId('status').className='status bad';
+    byId('status').textContent='Bağlantı testi başarısız: '+error.message;
+    byId('counts').textContent='Mevcut menüye herhangi bir değişiklik yapılmadı.';
+  });
+})();
+</script>
+</body>
+</html>
