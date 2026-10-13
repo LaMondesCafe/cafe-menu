@@ -7,9 +7,8 @@
    ASLA "service_role" anahtarını buraya yazmayın.
    ========================================================================== */
 window.LM_CONFIG = {
-  SUPABASE_URL: "https://jaqqekhriltecdoqghaw.supabase.co",
-  SUPABASE_ANON_KEY:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphcXFla2hyaWx0ZWNkb3FnaGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxOTcxMzAsImV4cCI6MjA5ODc3MzEzMH0.C0n58Otr2gn9ACpsymJVRyxZjKsQAjyW_3h04lR02EM",
+  SUPABASE_URL: "https://nqrgoaytepocyvnquyww.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_ZF5i89dq8W0fZjHxrs6Hgg_19zrNzFp",
   BUCKET: "lm-medya",
 
   /* --------------------------------------------------------------------------
@@ -24,7 +23,7 @@ window.LM_CONFIG = {
      bu satırı ona göre düzeltin — QR kodları buradan üretiliyor.
      İleride kendi alan adınızı alırsanız yine sadece burayı değiştirin.
      -------------------------------------------------------------------------- */
-  SITE_ADRESI: "https://lamondescafe.netlify.app",
+  SITE_ADRESI: "https://lamondescafe.github.io/cafe-menu",
 
   ISLETME: {
     ad: "La'mondes",
