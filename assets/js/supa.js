@@ -123,10 +123,12 @@
   /* İstek başlıkları: oturum varsa kullanıcı token'ı, yoksa anon anahtar. */
   function basliklar(ek) {
     var s = oturumOku();
-    var h = {
-      apikey: ANON,
-      Authorization: "Bearer " + (s && s.access_token ? s.access_token : ANON)
-    };
+   var h = { apikey: ANON };
+if (s && s.access_token) {
+  h.Authorization = "Bearer " + s.access_token;
+} else if (!ANON.startsWith("sb_publishable_")) {
+  h.Authorization = "Bearer " + ANON;
+}
     for (var k in ek || {}) h[k] = ek[k];
     return h;
   }
